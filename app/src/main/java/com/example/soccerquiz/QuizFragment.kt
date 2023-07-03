@@ -1,12 +1,13 @@
 package com.example.soccerquiz
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.example.soccerquiz.databinding.FragmentQuizBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -99,7 +100,20 @@ class QuizFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.main_menu, menu)
+            }
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return NavigationUI.onNavDestinationSelected(
+                    menuItem, requireView().findNavController()
+                )
+            }
+        })
 
         val binding = DataBindingUtil.inflate<FragmentQuizBinding>(
             inflater, R.layout.fragment_quiz, container, false
@@ -142,8 +156,10 @@ class QuizFragment : Fragment() {
                 }
             }
         }
+
         return binding.root
     }
+
 
     private fun getRandomQuizItem() {
         quizItems.shuffle()
